@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Todo App</title>
+        
+    <style>
+        .container{
+            max-height: 1000px;
+        }
+        .cards{
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+        .card{
+            border: 1px solid #ccc;
+            width: 100%;
+            display: inline-block;
+        }
+        hr{
+            margin-bottom: -10px;
+        }
+        .alert-warning{
+            height: 20px;
+            background-color: lightsalmon;
+        }
+        .alert-fail{
+            height: 20px;
+            background-color: lightcoral
+        }
+        .alert-success{
+            height: 20px;
+            background-color: lightgreen;
+        }
+        ul{
+            max-height: 106px;
+            padding: 0px;
+            list-style: none;
+            overflow-y: auto;
+        }
+        ul li{
+            display: flex;
+            justify-content: space-between;
+        }
+        .remove-button{
+            display: inline-block;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="container">
+        <div class="cards">
+            <div class="card">
+                <header class="card-header">
+                    <h4>Add Task</h4>
+                </header>
+                <div class="card-body">
+                    <form id="taskAddForm">     
+                        <label for="taskName"></label>
+                        <input type="text" name="taskName" id="taskName" placeholder="Enter a task" autocomplete="off">
+                        <button type="submit">Add</button>
+                    </form>
+
+                    <!-- <div class="add-alert" role="alert">
+                        <p>Task has been successfully added!</p>
+                    </div> -->
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="card">
+                <header class="card-header">
+                    <h4>Current Tasks</h4>
+                </header>
+                <div class="card-body">
+                    <form id="taskSearchForm">
+                        <label for="taskSearch"></label>
+                        <input type="text" name="taskSearch" id="taskSearch" placeholder="Search a task" autocomplete="off">
+                        <hr>
+                    </form>
+
+                    <ul class="task-list">
+
+                    </ul>
+                    <form id="clearTasksForm">
+                        <button type="reset">Clear Tasks</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
