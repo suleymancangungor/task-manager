@@ -1,5 +1,3 @@
-//! There are some issues with the code. I will fix them.
-
 let tasks = [];
 
 const form = document.querySelector("#taskAddForm");
@@ -24,7 +22,7 @@ function addTask(e){
             showAddAlert("warning");
             return;
         }
-        let newTask = new Task(value, "low");
+        let newTask = new Task(value);
         tasks.push(newTask);
         input.value = "";
         listTasks(tasks);
@@ -73,11 +71,13 @@ function listTasks(list){
         prioritySelect.appendChild(lowOption);
         prioritySelect.appendChild(mediumOption);
         prioritySelect.appendChild(highOption);
+        prioritySelect.value = task.priority;
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.classList.add("task-checkbox");
-        
+        checkbox.checked = task.completed;
+
         const span = document.createElement("span");
         span.textContent = task.text;
         span.classList.add("task-text");
@@ -88,10 +88,11 @@ function listTasks(list){
         
         const removeButton = document.createElement("button");
         removeButton.classList.add("remove-button");
-        removeButton.textContent = "X";
+        removeButton.textContent = "x";
 
         prioritySelect.addEventListener("change", (e) => {
             task.changePriority(e.target.value);
+            prioritySelect.value = task.priority;
             localStorage.setItem("tasks", JSON.stringify(tasks));
             reorderTasks();
         })
@@ -112,12 +113,21 @@ function listTasks(list){
             } else {
                 e.target.textContent = "Edit";
                 const updatedTask = span.textContent.trim();
-                if (updatedTask != null && updatedTask !== ""){
+                let existing = false;
+                for (let i = 0; i < tasks.length; i++){
+                    if (tasks[i].text.trim().toLowerCase() === task.text.trim().toLowerCase()){
+                        existing = true;
+                    }
+                }
+                if (updatedTask != null && updatedTask !== "" && !existing){
                     task.updateText(updatedTask);
                     localStorage.setItem("tasks", JSON.stringify(tasks));
+                } else if (existing){
+                   alert("Task already exists!");
+                    span.textContent = task.text; 
                 } else {
                     alert("Task cannot be empty!");
-                    span.textContent = task;
+                    span.textContent = task.text;
                 }
             }
         });
@@ -139,7 +149,7 @@ function listTasks(list){
 
 function reorderTasks(){
     tasks.sort((a,b) => {
-        const priorities = {"low" : 1, "medium": 2, "high" :3};
+        const priorities = {"low": 1, "medium": 2, "high": 3};
         return priorities[b.priority] - priorities[a.priority];
     });
     listTasks(tasks);
@@ -186,9 +196,9 @@ function hideAddAlert(){
 }
 
 class Task{
-    constructor(text, priority){
+    constructor(text){
         this.text = text;
-        this.priority = priority;
+        this.priority = "low"
         this.completed = false;
     }
 
