@@ -11,8 +11,7 @@ This project is a simple **To-Do list app** written in JavaScript.
 
 ## Upcoming Features  
 🚀 **Modern UI Design** with TailwindCSS or Bootstrap  
-🚀 **Backend integration** for real-time task syncing  
-🚀 **User authentication** (optional)  
+🚀 **Backend integration** for real-time task syncing
 
 ## Technologies Used  
 - JavaScript (Vanilla JS)  
