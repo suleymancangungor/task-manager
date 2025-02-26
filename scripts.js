@@ -1,5 +1,4 @@
-//! I was changing tasks format from only text to the class object. Not finished yet!
-
+//! There are some issues with the code. I will fix them.
 
 let tasks = [];
 
@@ -9,7 +8,8 @@ form.addEventListener("submit", addTask);
 document.addEventListener("DOMContentLoaded", loadList);
 
 function loadList(){
-    tasks = JSON.parse(localStorage.getItem("tasks"));
+    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+    tasks = storedTasks.map(task => new Task(task.text, task.priority));
     listTasks(tasks);
 }
 
@@ -24,7 +24,7 @@ function addTask(e){
             showAddAlert("warning");
             return;
         }
-        let newTask = new Task(value, 0);
+        let newTask = new Task(value, "low");
         tasks.push(newTask);
         input.value = "";
         listTasks(tasks);
@@ -91,15 +91,15 @@ function listTasks(list){
         removeButton.textContent = "X";
 
         prioritySelect.addEventListener("change", (e) => {
+            task.changePriority(e.target.value);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
             reorderTasks();
         })
 
         checkbox.addEventListener("change", (e)=>{
-            if (e.target.checked) {
-                span.style.textDecoration = "line-through";
-            } else {
-                span.style.textDecoration = "none";
-            }
+            task.toggleCompletion();
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            span.style.textDecoration = task.completed ? "line-through" : "none";
         });
 
         editButton.addEventListener("click", (e) => {
@@ -113,8 +113,7 @@ function listTasks(list){
                 e.target.textContent = "Edit";
                 const updatedTask = span.textContent.trim();
                 if (updatedTask != null && updatedTask !== ""){
-                    const taskIndex = tasks.indexOf(task);
-                    tasks[taskIndex] = updatedTask;
+                    task.updateText(updatedTask);
                     localStorage.setItem("tasks", JSON.stringify(tasks));
                 } else {
                     alert("Task cannot be empty!");
@@ -124,7 +123,7 @@ function listTasks(list){
         });
 
         removeButton.addEventListener("click", (e) => {
-            tasks= tasks.filter(t=> t.toLowerCase() !== task);
+            tasks= tasks.filter(t=> t.text.toLowerCase() !== task.text.toLowerCase());
             localStorage.setItem("tasks", JSON.stringify(tasks));
             listTasks(tasks);
             document.querySelector("#taskSearch").value = "";
@@ -140,10 +139,8 @@ function listTasks(list){
 
 function reorderTasks(){
     tasks.sort((a,b) => {
-        const priorityA = a.querySelector("select").value;
-        const priorityB = b.querySelector("select").value;
         const priorities = {"low" : 1, "medium": 2, "high" :3};
-        return priorities[priorityB] - priorities[priorityA];
+        return priorities[b.priority] - priorities[a.priority];
     });
     listTasks(tasks);
 }
@@ -187,7 +184,6 @@ function hideAddAlert(){
     const alert = document.querySelector(".alert");
     alert.remove();
 }
-
 
 class Task{
     constructor(text, priority){
